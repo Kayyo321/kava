@@ -26,10 +26,19 @@ typedef enum {
     prec_primary
 } Precedence;
 
+typedef void (*ParseFn)();
+
+typedef struct {
+    ParseFn prefix;
+    ParseFn infix;
+    Precedence precedence;
+} ParseRule;
+
 bool compile(const char *, Chunk *);
 
 static void expression(Parser *);
 static void parse_precedence(Parser *, Precedence);
+static void binary(Parser *);
 static void grouping(Parser *);
 static void unary(Parser *);
 static void number(Parser *);

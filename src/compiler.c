@@ -24,6 +24,32 @@ static void parse_precedence(Parser *parser, Precedence precedence) {
 
 }
 
+static void binary(Parser *parser) {
+    TokenType operator_type = parser->previous.type;
+
+    ParseRule *rule = get_rule(operator_type);
+
+    parse_precedence((Precedence)(rule->precedence+1));
+
+    switch (operator_type) {
+        case TT_Plus:
+            emit_byte(parser, op_add);
+            break;
+        case TT_Minus:
+            emit_byte(parser, op_sub);
+            break;
+        case TT_Star:
+            emit_byte(parser, op_mul);
+            break;
+        case TT_Slash:
+            emit_byte(parser, op_div);
+            break;
+        case TT_Modulo:
+            emit_byte(parser, op_mod);
+            break;
+    }
+}
+
 static void grouping(Parser *parser) {
     expression(parser);
 

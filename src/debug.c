@@ -11,13 +11,31 @@ void disassemble_chunk(Chunk *chunk, const char *name) {
 size_t disassemble_instruction(Chunk *chunk, size_t offset) {
     printf("%04d ", offset);
 
+    if (offset > 0 && chunk->lines[offset] == chunk->lines[offset-1]) {
+        printf(" | ");
+    } else {
+        printf("%4d  ", chunk->lines[offset]);
+    }
+
     const uint8_t instruction = chunk->code[offset];
 
     switch (instruction) {
-        case op_return:
-            return simple_instruction("op-return", offset);
         case op_constant:
             return constant_instruction(chunk, "op-constant", offset);
+        case op_add:
+            return simple_instruction("op-add", offset);
+        case op_sub:
+            return simple_instruction("op-sub", offset);
+        case op_mul:
+            return simple_instruction("op-mul", offset);
+        case op_div:
+            return simple_instruction("op-div", offset);
+        case op_mod:
+            simple_instruction("op-mod", offset);
+        case op_negate:
+            return simple_instruction("op-negate", offset);
+        case op_return:
+            return simple_instruction("op-return", offset);
         default:
             printf("unknown op-code %d\n", instruction);
             return offset+1;

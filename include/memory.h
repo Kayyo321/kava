@@ -9,6 +9,9 @@
 #define grow_array(type, pointer, old_count, new_count)\
 (type*)reallocate(pointer, sizeof(type) * old_count, sizeof(type) * new_count)
 
+#define free_array(type, pointer, old_count)\
+reallocate(pointer, sizeof(type) * old_count, 0)
+
 void *reallocate(void *, size_t, size_t);
 
 #endif

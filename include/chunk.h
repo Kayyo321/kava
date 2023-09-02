@@ -3,8 +3,12 @@
 
 #include "common.h"
 #include "memory.h"
+#include "value.h"
+
+#define new_chunk(c) nil; init_chunk(&c) 
 
 typedef enum {
+    op_constant,
     op_return,
 } OpCode;
 
@@ -12,9 +16,12 @@ typedef struct {
     size_t count;
     size_t capacity;
     uint8_t *code;
+    ValueArray constants;
 } Chunk;
 
 void init_chunk(Chunk *);
 void write_chunk(Chunk *, uint8_t);
+size_t add_constant(Chunk *, Value);
+void free_chunk(Chunk *);
 
 #endif

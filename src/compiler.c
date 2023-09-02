@@ -21,7 +21,23 @@ static void expression(Parser *parser) {
 }
 
 static void parse_precedence(Parser *parser, Precedence precedence) {
+    parser_advance(parser);
+    ParseFn prefix_rule = get_rule(parser->previous.type)->prefix;
+    if (prefix_rule == nil) {
+        err("Expect expression.");
+        return;
+    }
+    prefix_rule();
+    ParseFn infixRule;
+    while (precedence <= get_rule(parser->current.type)->precedence) {
+        parser_advance(parser);
+        infix_rule = get_rule(parser->previous.type);
+        infix_rule();
+    }
+}
 
+static ParseRule *get_rule(TokenType type) {
+    return &rules[type];
 }
 
 static void binary(Parser *parser) {

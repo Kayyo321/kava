@@ -36,6 +36,20 @@ size_t disassemble_instruction(Chunk *chunk, size_t offset) {
             return simple_instruction("op-negate", offset);
         case op_return:
             return simple_instruction("op-return", offset);
+        case op_nothing:
+            return simple_instruction("op-nothing", offset);
+        case op_true:
+            return simple_instruction("op-true", offset);
+        case op_false:
+            return simple_instruction("of-false", offset);
+        case op_not:
+            return simple_instruction("op-not", offset);
+        case op_equal:
+            return simple_instruction("op-equ", offset);
+        case op_greater:
+            return simple_instruction("op_greater", offset);
+        case op_less:
+            return simple_instruction("op_less", offset);
         default:
             printf("unknown op-code %d\n", instruction);
             return offset+1;

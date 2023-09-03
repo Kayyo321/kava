@@ -48,6 +48,24 @@ static void binary(Parser *parser) {
     parse_precedence((Precedence)(rule->precedence+1));
 
     switch (operator_type) {
+        case TT_BangEqu:
+            emit_bytes(parser, op_equal, op_not);
+            break;
+        case TT_EquEqu:
+            emit_byte(parser, op_equal);
+            break;
+        case TT_Greater:
+            emit_byte(parser, op_greater);
+            break;
+        case TT_GreaterEqu:
+            emit_bytes(parser, op_less, op_not);
+            break;
+        case TT_Less:
+            emit_byte(parser, op_less);
+            break;
+        case TT_LessEqu:
+            emit_bytes(parser, op_greater, op_not);
+            break;
         case TT_Plus:
             emit_byte(parser, op_add);
             break;
@@ -83,6 +101,8 @@ static void unary(Parser *parser) {
         case TT_Minus:
             emit_byte(parser, op_negate);
             break;
+        case TT_Bang:
+            emit_byte(parser, op_not);
         default:
             return;
     }
@@ -90,7 +110,23 @@ static void unary(Parser *parser) {
 
 static void number(Parser *parser) {
     double value = strtod(parser->previous.start, nil);
-    emit_constant(value);
+    emit_constant(as_number(value));
+}
+
+static void literal(Parser *parser) {
+    switch (parser->previous.type) {
+        case TT_False:
+            emit_byte(op_false);
+            break;
+        case TT_True:
+            emit_byte(op_true);
+            break;
+        case TT_Nothing:
+            emit_byte(op_nothing);
+            break;
+        default:
+            return;
+    }
 }
 
 static void emit_byte(Parser *parser, uint8_t byte) {
